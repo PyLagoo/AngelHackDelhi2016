@@ -1,0 +1,386 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highmaps Example</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+		<style type="text/css">
+
+html, body {
+    height:100%;
+    background: #2a2a2b;
+    overflow-y:hidden;
+    overflow-x: hidden;
+}
+
+.bar1{
+    background: red;
+    height:20px;
+    float:right;
+    margin-bottom: 10px;
+    max-width: 100%;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+.bar2{
+    min-width: 1px;
+    display: inline;
+    border-left: white 2px solid;
+    background: green;
+    max-width: 40%;
+    float: left;
+    margin-left: -30px; 
+    height: 20px;
+    margin-bottom: 10px;
+    max-width: 100%;
+}
+
+
+.tweetcard{
+    padding: 10px;
+    background: #2a2a2b;
+    color: #999;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    min-width: 100%;
+}
+
+#container {
+    height: 100%; 
+    min-width: 310px; 
+    max-width: 800px; 
+    margin: 0 auto; 
+}
+#wrapper{
+    background:#000;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    max-height: 100%;
+    right: 0px;
+    top: 0px;
+    color:white;
+    margin: 5px;
+    border: solid 2px #999;
+    border-radius: 10px;
+    padding: 0;
+    z-index: 1000;
+    max-width: 300px;
+}
+#info {
+    padding-left: 30px;
+ /*   width: 270px;*/
+    width: 90%;
+    
+}
+#info h2 {
+    font-size: 20px;
+    display: inline-block;
+}
+
+#info .f32 .flag {
+    vertical-align: middle !important;
+}
+.modal {
+    background: transparent;
+}
+
+#info h4 {
+    /*margin: 1em 0 0 0;*/
+}
+.loading {
+    margin-top: 10em;
+    text-align: center;
+    color: gray;
+}
+#zoom-out{
+    cursor: pointer;
+    position: fixed;
+    color: white;
+    bottom:0;
+    left:0;
+    font-size: 15px;
+    background-color: transparent;
+    border: white 2px solid;
+}
+
+#demo-2{
+    position: absolute;
+    top:0;
+    left: 0;
+
+}
+
+#demo-2 input[type=search] {
+    width: 15px;
+    padding-left: 10px;
+    color: transparent;
+    cursor: pointer;
+}
+#demo-2 input[type=search]:hover {
+    background-color: #000;
+}
+#demo-2 input[type=search]:focus {
+    width: 130px;
+    padding-left: 32px;
+    color: #fff;
+    background-color: #000;
+    cursor: auto;
+}
+#demo-2 input:-moz-placeholder {
+    color: transparent;
+}
+#demo-2 input::-webkit-input-placeholder {
+    color: transparent;
+}
+
+input {
+    outline: none;
+}
+input[type=search] {
+    -webkit-appearance: textfield;
+    -webkit-box-sizing: content-box;
+    font-family: inherit;
+    font-size: 100%;
+}
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button {
+    display: none; 
+}
+
+
+input[type=search] {
+    background: #ededed url(http://static.tumblr.com/ftv85bp/MIXmud4tx/search-icon.png) no-repeat 9px center;
+    border: solid 1px #ccc;
+    padding: 9px 10px 9px 32px;
+    width: 55px;
+    
+    -webkit-border-radius: 10em;
+    -moz-border-radius: 10em;
+    border-radius: 10em;
+    
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    transition: all .5s;
+}
+input[type=search]:focus {
+    width: 130px;
+    background-color: #000;
+    color:#fff;
+    border-color: #66CC75;
+    
+    -webkit-box-shadow: 0 0 5px rgba(109,207,246,.5);
+    -moz-box-shadow: 0 0 5px rgba(109,207,246,.5);
+    box-shadow: 0 0 5px rgba(109,207,246,.5);
+}
+
+		</style>
+<script type="text/javascript">
+
+$(function () {
+
+    // $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=world-population-density.json&callback=?', function (data) {
+
+    json = JSON.parse('{{json | safe}}')
+    trends = json['loc']
+    data = json['map']
+
+        // Initiate the chart
+        var mapChart = $('#container').highcharts('Map', {
+
+            title : {
+                text : 'PROJECT AURA'
+            },
+
+            mapNavigation: {
+                enabled: false
+            },
+
+            colorAxis: {
+                min: -1,
+                max: 1,
+                stops: [
+                    [0, "#D91E18"],
+                    [0.5, "#ABB7B7"],
+                    [1, "#34495E"]
+                ],
+                // maxColor: "#EC644B",
+                // minColor: "#22313F",
+                type: 'linear'
+            },
+            series : [{
+                data : data,
+                mapData: Highcharts.maps['custom/world'],
+                joinBy: ['iso-a2', 'code'],
+                allowPointSelect: true,
+                name: 'Overall sentiment',
+                states: {
+                    hover: {
+                        color: '#BADA55',
+                        borderColor: 'white'
+                    }
+                },                
+                events: {
+                    click: function (e) {
+                        e.point.zoomTo();
+                }
+            },
+
+            }]
+        }).highcharts();
+
+        var mapData = Highcharts.geojson(Highcharts.maps['custom/world']);
+        $.each(mapData, function () {
+            this.id = this.properties['hc-key']; // for Chart.get()
+            this.flag = this.id.replace('UK', 'GB').toLowerCase();
+        });
+
+        // Wrap point.select to get to the total selected points
+        Highcharts.wrap(Highcharts.Point.prototype, 'select', function (proceed) {
+            $('.bar2').width(0);
+            $('.bar1').width(0);
+
+
+            proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+
+            var points = mapChart.getSelectedPoints();
+           
+            if (points.length) {
+                if (points.length === 1) {
+                    $('#info #flag').attr('class', 'flag ' + points[0].code.toLowerCase());
+                    $('#info h2').html(points[0].name);
+                } else {
+                    $('#info #flag').attr('class', 'flag');
+                    $('#info h2').html('Comparing countries');
+                }
+                
+                var string = ''
+                for(x in trends)
+                {
+                    if(x == points[0].code)
+                    {
+                        for(y in trends[x]["trends"])
+                        {  
+                            string += '<div class="tweetcard">'
+                            string += y 
+                            var sent = trends[x]["trends"][y]*1000
+                            if(sent < 0)
+                            {
+                                sent = 0 - sent;
+                                string += '</div><div class="col-xs-6"><div class="bar1" style="width:'+ sent +'px;"></div></div><div class="col-xs-6"><div class="bar2" style="width:0;"></div></div><br><br>';
+                            }
+                            else
+                            {
+                                string += '</div><div class="col-xs-6"><div class="bar1" style="width:0;"></div></div><div class="col-xs-6"><div class="bar2" style="width:' + sent + 'px;"></div></div><br><br>';      
+                            }
+                        }
+                    }
+                }
+                
+                if(points[0].value < 0 )
+                $('#info .subheader').html('<h4 style="background-color:#e74c3c;padding:10px">Sentiment:'+points[0].value.toFixed(4) + '</h4><hr>' + string)
+                else
+                $('#info .subheader').html('<h4 style="background-color:#34495e;padding:10px">Sentiment:'+points[0].value.toFixed(4) + '</h4><hr>' + string)    
+                // if(points[0].value < 0){
+                //     $('.bar1').width(-points[0].value*1000);
+                //     $('.bar2').width(0);}
+                // else
+                // {
+                //     $('.bar2').width(points[0].value*1000);
+                //     $('.bar1').width(0);
+                // }
+
+                // change background color according to sentiment
+
+            } else {
+                $('#info #flag').attr('class', '');
+                $('#info h2').html('');
+                $('#info .subheader').html('<div style="margin-top:-30px">Click countries to view trends and sentiments</div>');
+                mapChart.mapZoom();
+
+                $('.bar2').width(0);
+                $('.bar1').width(0);
+
+
+            }
+        });
+
+    });
+
+
+    $('#zoom-out').click(function () {
+            // console.log($('#container').highcharts());
+                $('#info #flag').attr('class', '');
+                $('#info h2').html('');
+                $('#info .subheader').html('<div style="margin-top:-30px">Click countries to view trends and sentiments</div>');
+            $('#container').highcharts().mapZoom();
+            var points = $('#container').highcharts().getSelectedPoints();
+            console.log(points)
+        $.each(points, function () {
+            this.select();
+        });
+        });
+// });
+		</script>
+	</head>
+	<body>
+<script src="/static/js/highmaps.js"></script>
+<script src="/static/js/dark-unica.js"></script>
+<script src="/static/js/data.js"></script>
+<!-- <script src="js/exporting.js"></script> -->
+<script src="/static/js/world.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
+
+<div id="container" style="max-width: 100%"></div>
+
+
+
+<form id="demo-2">
+    <input type="search" placeholder="Search">
+</form>
+
+<div id="wrapper">
+    <div id="container"></div>
+    <div class="row">
+    <div id="info">
+        <span class="f32"><span id="flag"></span></span>
+        <h2></h2>
+        <div class="subheader"><div style="margin-top:-30px">Click countries to view trends and sentiments</div></div>
+
+        
+    </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div style="text-align:center">
+            <img src="aura.png">
+            <br><br>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+ <!-- <script type="text/javascript">
+//      if($.cookie('prepare') != 'seen'){
+//     $.cookie('prepare', 'seen', { expires: 365, path: '/' }); // Set it to last a year, for example.
+//     setTimeout(function(){
+//          $('#myModal').modal('show');
+//         }, 1000);
+//         $('#myModal').modal('hide'); // Now the pop up is hiden.
+//     };
+// </script> -->
+
+	</body>
+</html>
+
+
