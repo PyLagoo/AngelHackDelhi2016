@@ -337,8 +337,9 @@ $(function () {
 
 
 
-<form id="demo-2">
-    <input type="search" placeholder="Search">
+<form id="demo-2" method="POST" action="/submit">
+    <input type="search" name="search" placeholder="Search">
+    <button type="submit">Submit</button>
 </form>
 
 <div id="wrapper">
@@ -347,9 +348,7 @@ $(function () {
     <div id="info">
         <span class="f32"><span id="flag"></span></span>
         <h2></h2>
-        <div class="subheader"><div style="margin-top:-30px">Click countries to view trends and sentiments</div></div>
-
-        
+        <div class="subheader"><div style="margin-top:-30px">Click countries to view trends and sentiments</div></div>        
     </div>
     </div>
 </div>
