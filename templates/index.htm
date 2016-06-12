@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Highmaps Example</title>
+		<title>Project Aura</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -181,10 +181,19 @@ input[type=search]:focus {
 $(function () {
 
     // $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=world-population-density.json&callback=?', function (data) {
-
+    
+    {% if index == 'true' %}
     json = JSON.parse('{{json | safe}}')
     trends = json['loc']
     data = json['map']
+    {%endif%}
+
+    {% if index == 'false' %}
+    json = JSON.stringify({{json | safe}});
+    json = JSON.parse(json)
+    tweets = json["tweets"];
+    data = json['map_data'];
+    {%endif%}
 
         // Initiate the chart
         var mapChart = $('#container').highcharts('Map', {
@@ -220,13 +229,14 @@ $(function () {
                         color: '#BADA55',
                         borderColor: 'white'
                     }
-                },                
+                },      
+                {% if index == 'true'%}         
                 events: {
                     click: function (e) {
                         e.point.zoomTo();
                 }
-            },
-
+                },
+                {%endif%}
             }]
         }).highcharts();
 
@@ -236,6 +246,7 @@ $(function () {
             this.flag = this.id.replace('UK', 'GB').toLowerCase();
         });
 
+        {% if index == 'true' %}
         // Wrap point.select to get to the total selected points
         Highcharts.wrap(Highcharts.Point.prototype, 'select', function (proceed) {
             $('.bar2').width(0);
@@ -254,7 +265,7 @@ $(function () {
                     $('#info #flag').attr('class', 'flag');
                     $('#info h2').html('Comparing countries');
                 }
-                
+
                 var string = ''
                 for(x in trends)
                 {
@@ -305,6 +316,19 @@ $(function () {
 
             }
         });
+        {%endif%}
+
+        {% if index =='false'%}
+
+            var string = ''
+                        for(y in tweets)
+                        {  
+                            string += '<div class="tweetcard">'
+                            string += tweets[y] + '</div>'   
+                        }
+                         $('#info .subheader').html(string);
+        {%endif%}
+
 
     });
 
